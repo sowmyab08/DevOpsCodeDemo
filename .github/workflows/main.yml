@@ -16,3 +16,29 @@ jobs:
           cache: 'maven'
       - name: Build the source code and generate .war file on ubuntu server
         run: mvn package
+
+      - name: Load .env variables
+        run: |
+          echo "Loading environment variables..."
+          set -o allexport; source .env; set +o allexport
+
+      - name: connect to LAB and deploy code on tomcat9
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+         with:
+          host: $DEPLOY_HOST
+          user: $DEPLOY_USER
+          pass: $DEPLOY_PASS
+          port: $DEPLOY_PORT
+          connect_timeout: 10s
+
+          ## Giving the permission for copying the wat file to webapps directory
+          first_ssh: |
+             sudo chmod 777 /var/lib/tomcat9/webapps
+
+          ## Move the war file to webapps directory
+          scp: |
+             './target/*war' => /var/lib/tomcat9/webapps
+
+          ## Restart tomcat to automatically expand and deploy the application
+          last_ssh: |
+             sudo systemctl restart tomcat9
