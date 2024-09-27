@@ -37,3 +37,4 @@ jobs:
           ## Restart tomcat to automatically expand and deploy the application
           last_ssh: |
              sudo systemctl restart tomcat9
+
