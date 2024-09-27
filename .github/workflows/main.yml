@@ -24,7 +24,7 @@ jobs:
 
       - name: connect to LAB and deploy code on tomcat9
         uses: cross-the-world/ssh-scp-ssh-pipelines@latest
-         with:
+        with:
           host: $DEPLOY_HOST
           user: $DEPLOY_USER
           pass: $DEPLOY_PASS
